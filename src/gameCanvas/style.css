@@ -1,0 +1,9 @@
+.gameCanvas {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 0%;
+    background-color: gainsboro;
+    justify-self: center;
+    align-content: start;
+    margin-top: 25%;
+}

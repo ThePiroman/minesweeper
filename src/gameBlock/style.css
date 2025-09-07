@@ -1,0 +1,6 @@
+.gameBlock {
+    background-color:black;
+    border: solid;
+    border-color: whitesmoke;
+    cursor: pointer;
+}
