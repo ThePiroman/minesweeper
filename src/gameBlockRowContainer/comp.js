@@ -1,21 +1,23 @@
-import './style.css'
+import './style.css';
 
-export default class gameCanvas {
-    constructor(parent, size) {
+export default class gameBlockRowContainer {
+    constructor(parent) {
         this.parent = parent;
-        this.size = size;
+        this.rowDiv = null;
+        this.rowInd = null;
     }
 
     component() {
         const comp = document.createElement('div');
         comp.classList.add('div');
-        comp.className = 'gameCanvas';
+        comp.className = 'gameBlockRowContainer';
 
-        comp.style.width = this.size + 'px';
-        comp.style.height = 'auto';
+        this.rowDiv = comp;
 
+        
         return comp;
     }
+   
 
     render() {
         return this.parent.append(this.component());

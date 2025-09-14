@@ -1,12 +1,19 @@
 import './style.css'
-import { checkWinCondition, doWin, won, debug, debugMineColor} from '../main.js'
+import { checkWinCondition, doWin, won, blownUp, debug, debugMineColor, doGameOver, blocksArray} from '../main.js'
 
 export default class gameBlock {
     constructor(parent) {
         this.parent = parent;
+        this.block = null;
+    }
+
+    emptyBlock() {
+        this.block.style.visibility = "hidden";
     }
 
     component() {
+        var self = this;
+
         const comp = document.createElement('div');
         comp.classList.add('div');
         comp.className = 'gameBlock';
@@ -14,6 +21,8 @@ export default class gameBlock {
         comp.opened = false;
         comp.flagged = false;
         comp.mined = false;
+        this.block = comp;
+        comp.blockClass = this; // сомнительно но работает
 
         let compWidth = Number.parseInt(document.getElementsByClassName("gameCanvas")[0].style.width, 10)
         let compHeight = Number.parseInt(document.getElementsByClassName("gameCanvas")[0].style.height, 10)
@@ -33,6 +42,10 @@ export default class gameBlock {
                 return;
             }
 
+            if (blownUp) {
+                return;
+            }
+
             if (comp.flagged) {
                 new Audio("assets/sound/cant_click.mp3").play();
                 return;
@@ -46,15 +59,22 @@ export default class gameBlock {
 
                 comp.style.backgroundColor = "red";
 
+                doGameOver()
+
                 new Audio("assets/sound/boom.mp3").play();
 
                 setTimeout(function() {
                     location.reload();
                 }, 1000)
 
+
             } else {
 
-                comp.style.visibility = "hidden";
+                new Audio("assets/sound/block_open.mp3").play();
+
+               self.emptyBlock();
+
+               self.performSquareCheck();
 
             }
 
@@ -71,6 +91,10 @@ export default class gameBlock {
             event.preventDefault();
 
             if (won) {
+                return;
+            }
+
+            if (blownUp) {
                 return;
             }
             
@@ -100,6 +124,40 @@ export default class gameBlock {
 
 
         return comp;
+    }
+
+    performSquareCheck() {
+        let myRowArr = blocksArray[this.parent.rowInd];
+        let myRowInd = blocksArray.indexOf(myRowArr);
+        let myInd = myRowArr.indexOf(this.block);
+
+        let squareCheck = [];
+
+        for (let i = -1; i <= 1; i++) {
+            if (blocksArray[myRowInd - 1]) {
+                squareCheck.push(blocksArray[myRowInd - 1][myInd + i]);
+            }
+        }
+
+        for (let i = -1; i <= 1; i += 2) {
+            if (blocksArray[myRowInd][myInd + i]) {
+                squareCheck.push(blocksArray[myRowInd][myInd + i]);
+            }
+        }
+        
+
+        for (let i = -1; i <= 1; i++) {
+            if (blocksArray[myRowInd + 1]) {
+                squareCheck.push(blocksArray[myRowInd + 1][myInd + i]);
+            }
+            
+        }
+
+        squareCheck = squareCheck.filter((block) => block !== undefined);
+
+        squareCheck = squareCheck.filter((block) => block.style.visibility != "hidden");
+
+        console.log(squareCheck);
     }
 
     
