@@ -4,3 +4,11 @@
     border-color: whitesmoke;
     cursor: pointer;
 }
+
+.gameBlockNumber {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    background-color: whitesmoke;
+    cursor: default;
+}

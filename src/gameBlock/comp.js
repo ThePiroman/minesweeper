@@ -8,7 +8,36 @@ export default class gameBlock {
     }
 
     emptyBlock() {
+
         this.block.style.visibility = "hidden";
+
+        this.block.opened = true;
+    }
+
+    replaceBlockWithNumber(num) {
+        this.block.classList.add('gameBlockNumber')
+
+        this.block.textContent = num;
+
+        let numColors = new Map();
+
+        numColors.set(1, 'limegreen');
+        numColors.set(2, 'green');
+        numColors.set(3, 'orange');
+        numColors.set(4, 'red');
+        numColors.set(5, 'purple');
+
+
+        let colorDesired = numColors.get(num);
+
+        if (colorDesired === undefined) {
+            colorDesired = numColors.get(5);
+        }
+
+        this.block.style.color = colorDesired;
+
+        this.block.opened = true;
+
     }
 
     component() {
@@ -21,6 +50,7 @@ export default class gameBlock {
         comp.opened = false;
         comp.flagged = false;
         comp.mined = false;
+        
         this.block = comp;
         comp.blockClass = this; // сомнительно но работает
 
@@ -70,15 +100,9 @@ export default class gameBlock {
 
             } else {
 
-                new Audio("assets/sound/block_open.mp3").play();
-
-               self.emptyBlock();
-
                self.performSquareCheck();
 
             }
-
-            comp.opened = true;
 
             if (checkWinCondition()) {
                 doWin()
@@ -126,7 +150,8 @@ export default class gameBlock {
         return comp;
     }
 
-    performSquareCheck() {
+    performSquareCheck(initiator = 'ply') {
+        console.log(initiator)
         let myRowArr = blocksArray[this.parent.rowInd];
         let myRowInd = blocksArray.indexOf(myRowArr);
         let myInd = myRowArr.indexOf(this.block);
@@ -157,7 +182,35 @@ export default class gameBlock {
 
         squareCheck = squareCheck.filter((block) => block.style.visibility != "hidden");
 
-        console.log(squareCheck);
+        let mineCounter = 0;
+
+        squareCheck.forEach((block) => {
+            if (block.mined) {
+                mineCounter += 1;
+            }
+        })
+
+        if (mineCounter > 0) {
+
+            if (initiator == 'ply') {
+                new Audio("assets/sound/block_open.mp3").play();
+            }
+
+            this.replaceBlockWithNumber(mineCounter);
+            return;
+
+        } else {
+
+            if (initiator == 'ply') {
+                new Audio("assets/sound/block_big_open.mp3").play();
+            }
+
+            this.emptyBlock();
+
+            squareCheck.forEach((block) => {
+                block.blockClass.performSquareCheck(this.block);
+            })
+        }
     }
 
     

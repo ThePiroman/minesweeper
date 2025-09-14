@@ -3,6 +3,7 @@ import './normalize.css';
 import gameCanvas from './gameCanvas/comp';
 import gameBlock from './gameBlock/comp';
 import gameBlockRowContainer from './gameBlockRowContainer/comp';
+import gameTimer from './gameTimer/comp';
 
 export var won = false;
 export var blownUp = false;
@@ -14,8 +15,12 @@ export var blocksArray = [];
 
 let rows = 8;
 
+let minesAmount = 10;
+
 
 const app = document.querySelector('#app');
+
+new gameTimer(app).render();
 
 new gameCanvas(app, 256).render();
 
@@ -44,13 +49,12 @@ function createRow(columns) {
 }
 
 function randomizeMines() {
-    let minesAmount = 10;
-
-    while (minesAmount >= 0) {
+    while (minesAmount > 0) {
        Array.prototype.forEach.call(document.getElementsByClassName("gameBlock"), block => {
-            if (minesAmount < 0) {
+            if (minesAmount <= 0) {
                 return;
             }
+
             if (Math.random() < 0.25) {
                 block.mined = true;
 
@@ -84,7 +88,13 @@ export function checkWinCondition() {
 export function doWin() {
     Array.prototype.forEach.call(document.getElementsByClassName("gameBlock"), block => {
 
-        block.style.backgroundColor = "red";
+        console.log(block.mined);
+
+        if (block.mined) {
+
+            block.style.backgroundColor = "red";
+
+        }
 
     });
 
