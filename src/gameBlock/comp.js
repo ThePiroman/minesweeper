@@ -1,10 +1,28 @@
 import './style.css'
-import { checkWinCondition, doWin, won, blownUp, debug, debugMineColor, doGameOver, blocksArray} from '../main.js'
+import { checkWinCondition, doWin, won, blownUp, debug, debugMineColor, doGameOver, blocksArray, getRandomInt} from '../main.js'
 
 export default class gameBlock {
     constructor(parent) {
         this.parent = parent;
         this.block = null;
+    }
+
+    flaggedLimitCheck() {
+        let flaggedAmount = 0;
+        let minedAmount = 0;
+
+        Array.prototype.forEach.call(document.getElementsByClassName("gameBlock"), blockElem => {
+            if (blockElem.flagged) {
+                flaggedAmount += 1;
+            }
+
+            if (blockElem.mined) {
+                minedAmount += 1;
+            }
+        })
+
+        return flaggedAmount > minedAmount;
+
     }
 
     emptyBlock() {
@@ -91,7 +109,13 @@ export default class gameBlock {
 
                 doGameOver()
 
-                new Audio("assets/sound/boom.mp3").play();
+                let num = getRandomInt(1, 2);
+
+                let str = `assets/sound/boom${num}.mp3`;
+
+                console.log(str);
+
+                new Audio(str).play();
 
                 setTimeout(function() {
                     location.reload();
@@ -119,6 +143,16 @@ export default class gameBlock {
             }
 
             if (blownUp) {
+                return;
+            }
+
+            if (comp.opened) {
+                return;
+            }
+
+
+            if (self.flaggedLimitCheck() && !comp.flagged) {
+                new Audio("assets/sound/flag_place_cant.mp3").play();
                 return;
             }
             

@@ -107,6 +107,12 @@ export function doGameOver() {
     blownUp = true;
 }
 
+export function getRandomInt(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+}
+
 
 
 for (let i = 1; i <= rows; i++) {

@@ -3,7 +3,7 @@ import './style.css'
 export default class gameTimer {
     constructor(parent) {
         this.parent = parent;
-        this.start = Date.now();
+        this.start = 0;
     }
 
     
@@ -13,7 +13,7 @@ export default class gameTimer {
         comp.className = 'gameTimer';
 
         setInterval(() => {
-            let timerDate = new Date(Date.now() - Math.floor(this.start / 1000));
+            let timerDate = new Date(Math.floor(this.start / 1000));
             comp.textContent = `${timerDate.getMinutes()}:${timerDate.getSeconds()}`;
 
         }, 1000);
