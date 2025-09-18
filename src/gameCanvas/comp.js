@@ -1,9 +1,8 @@
 import './style.css'
 
 export default class gameCanvas {
-    constructor(parent, size) {
+    constructor(parent) {
         this.parent = parent;
-        this.size = size;
     }
 
     component() {
@@ -11,7 +10,6 @@ export default class gameCanvas {
         comp.classList.add('div');
         comp.className = 'gameCanvas';
 
-        comp.style.width = this.size + 'px';
         comp.style.height = 'auto';
 
         return comp;

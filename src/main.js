@@ -1,5 +1,7 @@
 import './reset.css';
 import './normalize.css';
+import './difficulties.js'
+import { getAvailableDifficulties, getDifficulty } from './difficulties.js';
 import gameCanvas from './gameCanvas/comp';
 import gameBlock from './gameBlock/comp';
 import gameBlockRowContainer from './gameBlockRowContainer/comp';
@@ -7,24 +9,12 @@ import gameTimer from './gameTimer/comp';
 
 export var won = false;
 export var blownUp = false;
-export var debug = false;
+export var debug = true;
 export var debugMineColor = "gray";
-
 
 export var blocksArray = [];
 
-let rows = 8;
-
-let minesAmount = 10;
-
-
-const app = document.querySelector('#app');
-
-new gameTimer(app).render();
-
-new gameCanvas(app, 256).render();
-
-function createRow(columns) {
+export function createRow(columns) {
 
     let rowElem = new gameBlockRowContainer(document.getElementsByClassName("gameCanvas")[0]);
 
@@ -42,27 +32,30 @@ function createRow(columns) {
 
     rowElem.rowDiv.rowInd = blocksArray.indexOf(childArr);
 
-    console.log(rowElem.rowDiv.rowInd)
-
-    console.log(blocksArray)
+    document.getElementsByClassName("gameCanvas")[0].style.width = rowElem.rowDiv.clientWidth + 'px';
 
 }
 
-function randomizeMines() {
-    while (minesAmount > 0) {
+export function randomizeMines(minesToPlace, chance) {
+    while (minesToPlace > 0) {
        Array.prototype.forEach.call(document.getElementsByClassName("gameBlock"), block => {
-            if (minesAmount <= 0) {
+        
+            if (minesToPlace <= 0) {
                 return;
             }
 
-            if (Math.random() < 0.25) {
-                block.mined = true;
+            if (getRandomInt(1, 100) < chance) {
 
-                if (debug) {
-                    block.style.backgroundColor = debugMineColor;
+                if (!block.mined) {
+                    block.mined = true;
+
+                    if (debug) {
+                        block.style.backgroundColor = debugMineColor;
+                    }
+                
+                    minesToPlace -= 1;
                 }
                 
-                minesAmount -= 1;
             }
         });
     }
@@ -88,8 +81,6 @@ export function checkWinCondition() {
 export function doWin() {
     Array.prototype.forEach.call(document.getElementsByClassName("gameBlock"), block => {
 
-        console.log(block.mined);
-
         if (block.mined) {
 
             block.style.backgroundColor = "red";
@@ -97,6 +88,8 @@ export function doWin() {
         }
 
     });
+
+    won = true;
 
     new Audio("assets/sound/win.mp3").play();
 
@@ -114,11 +107,43 @@ export function getRandomInt(min, max) {
 }
 
 
+const app = document.querySelector('#app');
 
-for (let i = 1; i <= rows; i++) {
-    createRow(rows);
+new gameTimer(app).render();
+
+new gameCanvas(app).render();
+
+let diffChosen = false;
+
+let desiredDifficulty = '';
+
+while (!diffChosen) {
+    desiredDifficulty = prompt("Difficulty: " + getAvailableDifficulties());
+    if (getDifficulty(desiredDifficulty) !== null) {
+        diffChosen = true;
+        desiredDifficulty = getDifficulty(desiredDifficulty);
+    } else {
+        alert("Bad difficulty name!")
+    }
 }
 
-randomizeMines()
+let rowsAmount = desiredDifficulty.get('rows');
+let columnsAmount = desiredDifficulty.get('columns');
+let minesAmount = desiredDifficulty.get('mines');
+
+let callback = desiredDifficulty.get('callbackFn');
+
+if (callback) {
+    callback(rowsAmount, columnsAmount, minesAmount);
+} else {
+    for (let i = 1; i <= rowsAmount; i++) {
+        createRow(columnsAmount);
+    }
+
+    randomizeMines(minesAmount, 25);
+}
+
+
+
 
 

@@ -29,10 +29,18 @@ export default class gameBlock {
 
         this.block.style.visibility = "hidden";
 
+        this.block.flagged = false;
+
         this.block.opened = true;
     }
 
     replaceBlockWithNumber(num) {
+        if (this.block.flagged) {
+            this.block.flagged = false;
+
+            this.block.style.backgroundColor = "black";
+        }
+
         this.block.classList.add('gameBlockNumber')
 
         this.block.textContent = num;
@@ -53,6 +61,8 @@ export default class gameBlock {
         }
 
         this.block.style.color = colorDesired;
+
+        this.block.style.backgroundColor = 'whitesmoke';
 
         this.block.opened = true;
 
