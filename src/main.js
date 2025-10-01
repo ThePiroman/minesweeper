@@ -9,7 +9,7 @@ import gameTimer from './gameTimer/comp';
 
 export var won = false;
 export var blownUp = false;
-export var debug = true;
+export var debug = false;
 export var debugMineColor = "gray";
 
 export var blocksArray = [];
