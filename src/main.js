@@ -14,6 +14,8 @@ export var debugMineColor = "gray";
 
 export var blocksArray = [];
 
+export var audioPlayLink = 'https://thepiroman.github.io/minesweeper/';
+
 export function createRow(columns) {
 
     let rowElem = new gameBlockRowContainer(document.getElementsByClassName("gameCanvas")[0]);
@@ -91,7 +93,7 @@ export function doWin() {
 
     won = true;
 
-    new Audio("assets/sound/win.mp3").play();
+    new Audio(audioPlayLink + "assets/sound/win.mp3").play();
 
     setTimeout(function() {location.reload()}, 6000)
 }
