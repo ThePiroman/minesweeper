@@ -1,5 +1,5 @@
 import './style.css'
-import { checkWinCondition, doWin, won, blownUp, debug, debugMineColor, doGameOver, blocksArray, getRandomInt, audioPlayLink} from '../main.js'
+import { checkWinCondition, doWin, won, blownUp, debug, debugMineColor, doGameOver, blocksArray, getRandomInt} from '../main.js'
 
 export default class gameBlock {
     constructor(parent) {
@@ -105,7 +105,7 @@ export default class gameBlock {
             }
 
             if (comp.flagged) {
-                new Audio(audioPlayLink + "assets/sound/cant_click.mp3").play();
+                new Audio("assets/sound/cant_click.mp3").play();
                 return;
             }
 
@@ -121,7 +121,7 @@ export default class gameBlock {
 
                 let num = getRandomInt(1, 2);
 
-                let str = audioPlayLink + `assets/sound/boom${num}.mp3`;
+                let str = `assets/sound/boom${num}.mp3`;
 
                 console.log(str);
 
@@ -162,7 +162,7 @@ export default class gameBlock {
 
 
             if (self.flaggedLimitCheck() && !comp.flagged) {
-                new Audio(audioPlayLink + "assets/sound/flag_place_cant.mp3").play();
+                new Audio("assets/sound/flag_place_cant.mp3").play();
                 return;
             }
             
@@ -185,7 +185,7 @@ export default class gameBlock {
 
             }
 
-            new Audio(audioPlayLink + "assets/sound/flag_place.mp3").play();
+            new Audio("assets/sound/flag_place.mp3").play();
 
         });
 
@@ -237,7 +237,7 @@ export default class gameBlock {
         if (mineCounter > 0) {
 
             if (initiator == 'ply') {
-                new Audio(audioPlayLink + "assets/sound/block_open.mp3").play();
+                new Audio("assets/sound/block_open.mp3").play();
             }
 
             this.replaceBlockWithNumber(mineCounter);
@@ -246,7 +246,7 @@ export default class gameBlock {
         } else {
 
             if (initiator == 'ply') {
-                new Audio(audioPlayLink + "assets/sound/block_big_open.mp3").play();
+                new Audio("assets/sound/block_big_open.mp3").play();
             }
 
             this.emptyBlock();
