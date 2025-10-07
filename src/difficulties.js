@@ -47,6 +47,18 @@ registerDifficulty("Custom", 0, 0, 0, (rows, columns, mines) => {
     columns = prompt("Columns amount: ");
     mines = prompt("Mines amount: ");
 
+    if (rows < 0) {
+        rows = -rows;
+    }
+
+    if (columns < 0) {
+        columns = -columns;
+    }
+
+    if (mines < 0) {
+        mines = -mines;
+    }
+
     for (let i = 1; i <= rows; i++) {
         createRow(columns);
     }

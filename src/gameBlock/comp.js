@@ -1,5 +1,5 @@
 import './style.css'
-import { checkWinCondition, doWin, won, blownUp, debug, debugMineColor, doGameOver, blocksArray, getRandomInt} from '../main.js'
+import { checkWinCondition, doWin, won, blownUp, debug, debugMineColor, doGameOver, blocksArray, getRandomInt, getSquareArray} from '../main.js'
 
 export default class gameBlock {
     constructor(parent) {
@@ -62,7 +62,7 @@ export default class gameBlock {
 
         this.block.style.color = colorDesired;
 
-        this.block.style.backgroundColor = 'whitesmoke';
+        this.block.style.backgroundColor = '#62686e';
 
         this.block.opened = true;
 
@@ -195,36 +195,37 @@ export default class gameBlock {
     }
 
     performSquareCheck(initiator = 'ply') {
-        console.log(initiator)
-        let myRowArr = blocksArray[this.parent.rowInd];
-        let myRowInd = blocksArray.indexOf(myRowArr);
-        let myInd = myRowArr.indexOf(this.block);
+        // let myRowArr = blocksArray[this.parent.rowInd];
+        // let myRowInd = blocksArray.indexOf(myRowArr);
+        // let myInd = myRowArr.indexOf(this.block);
 
-        let squareCheck = [];
+        // let squareCheck = [];
 
-        for (let i = -1; i <= 1; i++) {
-            if (blocksArray[myRowInd - 1]) {
-                squareCheck.push(blocksArray[myRowInd - 1][myInd + i]);
-            }
-        }
+        // for (let i = -1; i <= 1; i++) {
+        //     if (blocksArray[myRowInd - 1]) {
+        //         squareCheck.push(blocksArray[myRowInd - 1][myInd + i]);
+        //     }
+        // }
 
-        for (let i = -1; i <= 1; i += 2) {
-            if (blocksArray[myRowInd][myInd + i]) {
-                squareCheck.push(blocksArray[myRowInd][myInd + i]);
-            }
-        }
+        // for (let i = -1; i <= 1; i += 2) {
+        //     if (blocksArray[myRowInd][myInd + i]) {
+        //         squareCheck.push(blocksArray[myRowInd][myInd + i]);
+        //     }
+        // }
         
 
-        for (let i = -1; i <= 1; i++) {
-            if (blocksArray[myRowInd + 1]) {
-                squareCheck.push(blocksArray[myRowInd + 1][myInd + i]);
-            }
+        // for (let i = -1; i <= 1; i++) {
+        //     if (blocksArray[myRowInd + 1]) {
+        //         squareCheck.push(blocksArray[myRowInd + 1][myInd + i]);
+        //     }
             
-        }
+        // }
 
-        squareCheck = squareCheck.filter((block) => block !== undefined);
+        // squareCheck = squareCheck.filter((block) => block !== undefined);
 
-        squareCheck = squareCheck.filter((block) => block.style.visibility != "hidden");
+        // squareCheck = squareCheck.filter((block) => block.style.visibility != "hidden");
+
+        let squareCheck = getSquareArray(this);
 
         let mineCounter = 0;
 
