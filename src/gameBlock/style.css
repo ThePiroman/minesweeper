@@ -6,11 +6,47 @@
 }
 
 .gameBlockNumber {
+    font-family: "Tiny5";
     font-size: 32px;
     font-weight: bold;
     text-align: center;
     cursor: default;
-    font-family: "Tiny5", sans-serif;
     font-weight: 400;
-    font-style: normal;
+    background-color: #62686e;
+}
+
+.gameBlockNumberDangerVeryLight {
+    color: limegreen;
+}
+
+.gameBlockNumberDangerLight {
+    color: green;
+}
+
+.gameBlockNumberDangerMedium {
+    color: orange;
+}
+
+.gameBlockNumberDangerHeavy {
+    color: red;
+}
+
+.gameBlockNumberDangerOverkill {
+    color: purple;
+}
+
+.gameBlockFlagged {
+    background-color: yellow;
+}
+
+.gameBlockHidden {
+    visibility: hidden;
+}
+
+.gameBlockDebug {
+    background-color: gray;
+}
+
+.gameBlockMineRevealed {
+    background-color: red;
 }

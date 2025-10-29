@@ -1,17 +1,49 @@
 import './style.css'
-import { checkWinCondition, doWin, won, blownUp, debug, debugMineColor, doGameOver, blocksArray, getRandomInt, getSquareArray} from '../main.js'
+import { getRandomInt, getSquareArray, createElement} from '../funcs.js'
+import {DEBUG} from '../main.js'
 
 export default class gameBlock {
     constructor(parent) {
         this.parent = parent;
-        this.block = null;
+        this.block = null; // reference to the block HTML element
     }
 
+    checkWinCondition() {
+    
+        let returnValue = true;
+    
+        Array.from(document.getElementsByClassName("gameBlock")).forEach((block) => {
+            if (!block.opened && !block.mined) {
+                returnValue = false; // fail if we have any 'safe' block that haven't been revealed yet
+            }
+    
+        });
+    
+        return returnValue;
+    
+    
+    }
+    
+    doWin() {
+        Array.from(document.getElementsByClassName("gameBlock")).filter((block) => block.mined).forEach((block) => { // reveal each mined block
+    
+            block.classList.add('gameBlockMineRevealed');
+    
+        });
+    
+        sessionStorage.won = true;
+    
+        new Audio("assets/sound/win.mp3").play();
+    
+        setTimeout(function() {location.reload()}, 6000)
+    }
+
+    // function for checking if there are too many blocks flagged
     flaggedLimitCheck() {
         let flaggedAmount = 0;
         let minedAmount = 0;
 
-        Array.prototype.forEach.call(document.getElementsByClassName("gameBlock"), blockElem => {
+        Array.from(document.getElementsByClassName("gameBlock")).forEach((blockElem) => {
             if (blockElem.flagged) {
                 flaggedAmount += 1;
             }
@@ -25,105 +57,77 @@ export default class gameBlock {
 
     }
 
+    // function for hiding the block in case it's not mined
     emptyBlock() {
 
-        this.block.style.visibility = "hidden";
-
+        this.block.classList.add('gameBlockHidden'); 
+        
         this.block.flagged = false;
 
         this.block.opened = true;
     }
 
-    replaceBlockWithNumber(num) {
+    // function for replacing the block with a number of mines around it
+    replaceBlockWithNumber(num = Number) {
         if (this.block.flagged) {
             this.block.flagged = false;
-
-            this.block.style.backgroundColor = "black";
         }
 
-        this.block.classList.add('gameBlockNumber')
+        this.block.classList.add('gameBlockNumber');
 
         this.block.textContent = num;
 
-        let numColors = new Map();
+        let numColors = {1: 'gameBlockNumberDangerVeryLight', 2: 'gameBlockNumberDangerLight', 3: 'gameBlockNumberDangerMedium', 4: 'gameBlockNumberDangerHeavy', 5: 'gameBlockNumberDangerOverkill'};
 
-        numColors.set(1, 'limegreen');
-        numColors.set(2, 'green');
-        numColors.set(3, 'orange');
-        numColors.set(4, 'red');
-        numColors.set(5, 'purple');
-
-
-        let colorDesired = numColors.get(num);
+        let colorDesired = numColors[num];
 
         if (colorDesired === undefined) {
-            colorDesired = numColors.get(5);
+            colorDesired = numColors['5'];
         }
 
-        this.block.style.color = colorDesired;
-
-        this.block.style.backgroundColor = '#62686e';
+        this.block.classList.add(colorDesired);
 
         this.block.opened = true;
 
     }
 
     component() {
-        var self = this;
+        var self = this; // allows to call functions of the class inside of it
 
-        const comp = document.createElement('div');
-        comp.classList.add('div');
-        comp.className = 'gameBlock';
+        const comp = createElement(this.parent, 'div', 'gameBlock');
 
         comp.opened = false;
         comp.flagged = false;
         comp.mined = false;
         
         this.block = comp;
-        comp.blockClass = this; // сомнительно но работает
+        comp.blockClass = this; // reference to the HTML element component; required to call a component function through an HTML element
 
-        let compWidth = Number.parseInt(document.getElementsByClassName("gameCanvas")[0].style.width, 10)
-        let compHeight = Number.parseInt(document.getElementsByClassName("gameCanvas")[0].style.height, 10)
+        comp.style.height = 32 + 'px'; // very tight size adjustment
 
-        // comp.style.width = compWidth / 4 + 'px';
+        comp.style.borderWidth = 2 + 'px'; // same
 
-        // comp.style.height = compHeight / 4 + 'px';
+        comp.style.width = 32 - (Number.parseInt(comp.style.borderWidth, 10) * 2) + 'px'; // same
 
-        comp.style.height = 32 + 'px';
-
-        comp.style.borderWidth = 2 + 'px';
-
-        comp.style.width = 32 - (Number.parseInt(comp.style.borderWidth, 10) * 2) + 'px';
-
-        comp.addEventListener("click", function(event) {
-            if (won) {
-                return;
-            }
-
-            if (blownUp) {
-                return;
-            }
-
+        comp.addEventListener("click", function() {
             if (comp.flagged) {
-                new Audio("assets/sound/cant_click.mp3").play();
+                new Audio('assets/sound/cant_click.mp3').play();
                 return;
             }
 
-            if (comp.opened) {
+            if (sessionStorage.won || sessionStorage.blownUp || comp.opened) {
                 return;
             }
 
             if (comp.mined) {
 
-                comp.style.backgroundColor = "red";
+                comp.classList.add('gameBlockMineRevealed');
 
-                doGameOver()
+                sessionStorage.blownUp = true;
 
                 let num = getRandomInt(1, 2);
 
                 let str = `assets/sound/boom${num}.mp3`;
-
-                console.log(str);
 
                 new Audio(str).play();
 
@@ -138,8 +142,8 @@ export default class gameBlock {
 
             }
 
-            if (checkWinCondition()) {
-                doWin()
+            if (self.checkWinCondition()) {
+                self.doWin()
             }
 
             
@@ -148,15 +152,7 @@ export default class gameBlock {
         comp.addEventListener("contextmenu", function(event) {
             event.preventDefault();
 
-            if (won) {
-                return;
-            }
-
-            if (blownUp) {
-                return;
-            }
-
-            if (comp.opened) {
+            if (sessionStorage.won || sessionStorage.blownUp || comp.opened) {
                 return;
             }
 
@@ -171,16 +167,20 @@ export default class gameBlock {
 
                 comp.flagged = true;
 
-                comp.style.backgroundColor = "yellow";
+                if (DEBUG && comp.mined) {
+                    comp.classList.remove('gameBlockDebug');
+                }
+
+                comp.classList.add('gameBlockFlagged');
 
             } else {
 
                 comp.flagged = false;
 
-                comp.style.backgroundColor = "black";
+                comp.classList.remove('gameBlockFlagged');
 
-                if (debug && comp.mined) {
-                    comp.style.backgroundColor = debugMineColor;
+                if (DEBUG && comp.mined) {
+                    comp.classList.add('gameBlockDebug');
                 }
 
             }
@@ -194,38 +194,10 @@ export default class gameBlock {
         return comp;
     }
 
-    performSquareCheck(initiator = 'ply') {
-        // let myRowArr = blocksArray[this.parent.rowInd];
-        // let myRowInd = blocksArray.indexOf(myRowArr);
-        // let myInd = myRowArr.indexOf(this.block);
+    //function for opening neighbour empty blocks and causing them to open their neighbours, causing a loop until we hit a block that has a mined neighbour 
+    performSquareCheck(initiator = 'player') { // to prevent ear rape we see who started the check in the first place - if it's a player, we play a sound, if it ain't, we don't 
 
-        // let squareCheck = [];
-
-        // for (let i = -1; i <= 1; i++) {
-        //     if (blocksArray[myRowInd - 1]) {
-        //         squareCheck.push(blocksArray[myRowInd - 1][myInd + i]);
-        //     }
-        // }
-
-        // for (let i = -1; i <= 1; i += 2) {
-        //     if (blocksArray[myRowInd][myInd + i]) {
-        //         squareCheck.push(blocksArray[myRowInd][myInd + i]);
-        //     }
-        // }
-        
-
-        // for (let i = -1; i <= 1; i++) {
-        //     if (blocksArray[myRowInd + 1]) {
-        //         squareCheck.push(blocksArray[myRowInd + 1][myInd + i]);
-        //     }
-            
-        // }
-
-        // squareCheck = squareCheck.filter((block) => block !== undefined);
-
-        // squareCheck = squareCheck.filter((block) => block.style.visibility != "hidden");
-
-        let squareCheck = getSquareArray(this);
+        let squareCheck = getSquareArray(this.block);
 
         let mineCounter = 0;
 
@@ -237,7 +209,7 @@ export default class gameBlock {
 
         if (mineCounter > 0) {
 
-            if (initiator == 'ply') {
+            if (initiator == 'player') {
                 new Audio("assets/sound/block_open.mp3").play();
             }
 
@@ -246,14 +218,14 @@ export default class gameBlock {
 
         } else {
 
-            if (initiator == 'ply') {
+            if (initiator == 'player') {
                 new Audio("assets/sound/block_big_open.mp3").play();
             }
 
             this.emptyBlock();
 
             squareCheck.forEach((block) => {
-                block.blockClass.performSquareCheck(this.block);
+                block.blockClass.performSquareCheck(block);
             })
         }
     }

@@ -1,6 +1,6 @@
 import './style.css';
-import { setDifficulty, initializeCanvas } from '../main.js';
-import { getAvailableDifficulties, getDifficulty } from '../difficulties.js';
+import { setDifficulty, initializeCanvas, createElement } from '../funcs.js';
+import { getAvailableDifficulties, getDifficulty, registeredDifficulties } from '../difficulties.js';
 
 export default class gameDiffChoice {
     constructor(parent) {
@@ -8,38 +8,60 @@ export default class gameDiffChoice {
     }
 
     component() {
-        const comp = document.createElement('div');
-        comp.classList.add('div');
-        comp.className = 'gameDiffChoice';
+        const comp = createElement(this.parent, 'div', 'gameDiffChoice')
 
-        const compText = document.createElement('p');
-        compText.classList.add('p');
-        compText.className = 'gameDiffChoiceDesc';
-        compText.textContent = 'Select difficulty: ' + getAvailableDifficulties();
+        createElement(comp, 'p', 'gameDiffChoiceDesc', (desc) => {
+            desc.textContent = 'Select difficulty: ' + getAvailableDifficulties();
+        })
 
-        const compInput = document.createElement('input');
-        compInput.classList.add('input');
-        compInput.className = 'gameDiffChoiceInput';
-        compInput.placeholder = 'Difficulty';
-        compInput.oninput = () => {
+        // const compInput = document.createElement('input');
+        // compInput.classList.add('input');
+        // compInput.className = 'gameDiffChoiceInput';
+        // compInput.placeholder = 'Difficulty';
+        // compInput.oninput = () => {
 
-            new Audio('assets/sound/form_input.mp3').play();
+        //     new Audio('assets/sound/form_input.mp3').play();
 
-            if (getDifficulty(compInput.value.charAt(0).toUpperCase() + compInput.value.slice(1)) !== null) {
+        //     if (getDifficulty(compInput.value.charAt(0).toUpperCase() + compInput.value.slice(1)) !== null) {
 
-                setDifficulty(getDifficulty(compInput.value.charAt(0).toUpperCase() + compInput.value.slice(1)));
+        //         setDifficulty(getDifficulty(compInput.value.charAt(0).toUpperCase() + compInput.value.slice(1)));
 
-                comp.remove();
+        //         comp.remove();
                 
-                initializeCanvas();
+        //         initializeCanvas();
 
-            }
-        }
+        //     }
+        // }
+
+        registeredDifficulties.forEach((diff) => {
+            createElement(comp, 'button', 'gameDiffChoiceButton', (butt) => {
+                butt.textContent = diff.name;
+
+                // compButton.onmouseover = () => {
+                //     new Audio('assets/sound/form_input.mp3').play();
+                // }
+                
+                butt.onclick = () => {
+
+                    setDifficulty(getDifficulty(butt.textContent));
+
+                    comp.remove();
+
+                    initializeCanvas();
+                }
+
+                butt.onmouseover = () => {
+                    butt.classList.add('gameDiffChoiceButtonHovered');
+                }
+
+                butt.onmouseleave = () => {
+                    butt.classList.remove('gameDiffChoiceButtonHovered');
+                }
+            });
+            
 
 
-        comp.appendChild(compText);
-
-        comp.appendChild(compInput);
+        })
 
         return comp;
     }

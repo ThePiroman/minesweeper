@@ -1,3 +1,4 @@
+import { createElement } from '../funcs';
 import './style.css'
 
 export default class gameCanvas {
@@ -6,13 +7,7 @@ export default class gameCanvas {
     }
 
     component() {
-        const comp = document.createElement('div');
-        comp.classList.add('div');
-        comp.className = 'gameCanvas';
-
-        comp.style.height = 'auto';
-
-        return comp;
+        return createElement(this.parent, 'div', 'gameCanvas');
     }
 
     render() {

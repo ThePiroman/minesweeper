@@ -1,21 +1,17 @@
+import { createElement } from '../funcs';
 import './style.css';
 
 export default class gameBlockRowContainer {
     constructor(parent) {
         this.parent = parent;
-        this.rowDiv = null;
-        this.rowInd = null;
+        this.rowDiv = null; // variable for storing the component's div, since we gotta reference it somehow
+        this.rowInd = null; // position of the row in the global blocks array
     }
 
     component() {
-        const comp = document.createElement('div');
-        comp.classList.add('div');
-        comp.className = 'gameBlockRowContainer';
-
-        this.rowDiv = comp;
-
-        
-        return comp;
+        return createElement(this.parent, 'div', 'gameBlockRowContainer', (comp) => {
+            this.rowDiv = comp;
+        });
     }
    
 
