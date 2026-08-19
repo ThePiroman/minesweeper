@@ -1,10 +1,9 @@
 .gameCanvas {
-    display: flex;
+    display: grid;
     flex-wrap: wrap;
     row-gap: 0%;
+    justify-content: center;
+    align-items: center;
     background-color: #62686e;
-    justify-self: center;
-    align-content: start;
-    margin-top: 25%;
     height:auto;
 }

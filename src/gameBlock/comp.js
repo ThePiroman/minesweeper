@@ -1,11 +1,13 @@
 import './style.css'
 import { getRandomInt, getSquareArray, createElement} from '../funcs.js'
-import {DEBUG} from '../main.js'
+import {DEBUG} from '../consts.js'
+import { gAudio } from '../main.js';
 
 export default class gameBlock {
     constructor(parent) {
         this.parent = parent;
         this.block = null; // reference to the block HTML element
+        this.gAudio = gAudio; // doing this to play multiple sounds at the same time
     }
 
     checkWinCondition() {
@@ -33,7 +35,7 @@ export default class gameBlock {
     
         sessionStorage.won = true;
     
-        new Audio("assets/sound/win.mp3").play();
+        this.gAudio.playSound("win");
     
         setTimeout(function() {location.reload()}, 6000)
     }
@@ -85,6 +87,8 @@ export default class gameBlock {
             colorDesired = numColors['5'];
         }
 
+        this.block.classList.remove('gameBlockFlagged')
+
         this.block.classList.add(colorDesired);
 
         this.block.opened = true;
@@ -111,7 +115,7 @@ export default class gameBlock {
 
         comp.addEventListener("click", function() {
             if (comp.flagged) {
-                new Audio('assets/sound/cant_click.mp3').play();
+                self.gAudio.playSound("cant")
                 return;
             }
 
@@ -127,9 +131,13 @@ export default class gameBlock {
 
                 let num = getRandomInt(1, 2);
 
-                let str = `assets/sound/boom${num}.mp3`;
+                let snd = "boom1"
 
-                new Audio(str).play();
+                if (num == 2) {
+                    snd = "boom2"
+                }
+
+                self.gAudio.playSound(snd)
 
                 setTimeout(function() {
                     location.reload();
@@ -158,7 +166,7 @@ export default class gameBlock {
 
 
             if (self.flaggedLimitCheck() && !comp.flagged) {
-                new Audio("assets/sound/flag_place_cant.mp3").play();
+                this.gAudio.playSound("cantflag")
                 return;
             }
             
@@ -171,6 +179,8 @@ export default class gameBlock {
                     comp.classList.remove('gameBlockDebug');
                 }
 
+                self.gAudio.playSound("flag")
+
                 comp.classList.add('gameBlockFlagged');
 
             } else {
@@ -179,13 +189,13 @@ export default class gameBlock {
 
                 comp.classList.remove('gameBlockFlagged');
 
+                self.gAudio.playSound("flagpickup")
+
                 if (DEBUG && comp.mined) {
                     comp.classList.add('gameBlockDebug');
                 }
 
             }
-
-            new Audio("assets/sound/flag_place.mp3").play();
 
         });
 
@@ -210,7 +220,7 @@ export default class gameBlock {
         if (mineCounter > 0) {
 
             if (initiator == 'player') {
-                new Audio("assets/sound/block_open.mp3").play();
+                this.gAudio.playSound("open")
             }
 
             this.replaceBlockWithNumber(mineCounter);
@@ -219,7 +229,7 @@ export default class gameBlock {
         } else {
 
             if (initiator == 'player') {
-                new Audio("assets/sound/block_big_open.mp3").play();
+                this.gAudio.playSound("bigopen")
             }
 
             this.emptyBlock();

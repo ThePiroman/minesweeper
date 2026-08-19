@@ -1,6 +1,7 @@
 import './style.css';
 import { setDifficulty, initializeCanvas, createElement } from '../funcs.js';
-import { getAvailableDifficulties, getDifficulty, registeredDifficulties } from '../difficulties.js';
+import { getAvailableDifficulties, getDifficulty } from '../difficulties.js';
+import { registeredDifficulties } from '../consts.js';
 
 export default class gameDiffChoice {
     constructor(parent) {
@@ -64,6 +65,10 @@ export default class gameDiffChoice {
         })
 
         return comp;
+    }
+
+    created() {
+        
     }
 
     render() {

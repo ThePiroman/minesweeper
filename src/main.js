@@ -3,16 +3,15 @@ import './normalize.css';
 import './main.css';
 import './difficulties.js';
 import './funcs.js';
+import './consts.js'
 
 import gameCanvas from './gameCanvas/comp';
 import gameDiffChoice from './gameDiffChoice/comp.js';
+import gameAudio from './gameAudio/comp.js';
 
 
 addEventListener("beforeunload", () => {sessionStorage.clear()});
 
-export const DEBUG = import.meta.env.VITE_DEBUG === 'true';
-
-export const debugMineColor = "gray";
 
 export let blocksArray = [];
 
@@ -22,7 +21,7 @@ new gameDiffChoice(app).render();
 
 new gameCanvas(app).render();
 
+export let gAudio = new gameAudio();
 
-
-
+gAudio.initialize();
 

@@ -1,6 +1,8 @@
 import gameBlockRowContainer from "./gameBlockRowContainer/comp";
 import gameBlock from "./gameBlock/comp";
-import { blocksArray, DEBUG } from "./main";
+import { gAudio } from "./main";
+import { blocksArray } from "./main";
+import {DEBUG} from "./consts"
 
 // function for creating a row of blocks
 export function createRow(columns = Number) {
@@ -149,7 +151,7 @@ export function initializeCanvas() {
         randomizeMines(minesAmount, 25);
     }
 
-    new Audio('assets/sound/game_start.mp3').play();
+    gAudio.playSound("gamestart")
 }
 
 // function for faster creation elements in components
