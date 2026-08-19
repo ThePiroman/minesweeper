@@ -166,7 +166,7 @@ export default class gameBlock {
 
 
             if (self.flaggedLimitCheck() && !comp.flagged) {
-                this.gAudio.playSound("cantflag")
+                self.gAudio.playSound("cantflag")
                 return;
             }
             
